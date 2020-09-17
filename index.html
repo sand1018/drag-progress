@@ -1,27 +1,78 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        #progress{
+        #progress {
             height: 20px;
             width: 500px;
             background-color: #ccc;
             border-radius: 8px;
-            margin: 200px 200px;
+            position: relative;
+        }
+
+        #progress_pill {
+            position: absolute;
+            border-radius: 8px 0 0px 8px;
+            height: 100%;
+            background-color: red;
+            left: 0;
+            top: 0;
+        }
+
+        #bar {
+            position: absolute;
+            top: -5px;
+            left: 0;
+            height: 30px;
+            width: 20px;
+            background-color: red;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-<div id="progress">
-    <div id="progress_pill">
-
+    <div style="display: flex;padding: 200px;">
+        <div id="progress">
+            <div id="progress_pill">
+            </div>
+            <span id="bar">
+            </span>
+        </div>
+        <span id="progress_text" style="margin-left: 20px;">0%</span>
     </div>
-</div>
-  <script>
-      window.onLoad = function(){
-          alert('123')
-      }
-  </script>
+
+    <script>
+        window.onload = function () {
+            var progress = document.getElementById('progress')
+            var progress_pill = document.getElementById('progress_pill')
+            var progress_text = document.getElementById('progress_text')
+            var bar = progress.children[1]
+            var moveWidth = progress.offsetWidth - bar.offsetWidth
+            bar.onmousedown = function (event) {
+                var e = window.event || event
+                var clientX = event.clientX - bar.offsetLeft
+                console.log(progress.offsetWidth)
+                document.body.onmousemove = function (event) {
+                    event = event || window.event;
+                    var moveX = event.clientX - clientX
+                    if (moveX <= 0) {
+                        moveX = 0
+                    } else if (moveX >= moveWidth) {
+                        moveX = moveWidth
+                    }
+                    bar.style.left = moveX + 'px'
+                    progress_pill.style.width = moveX + 'px'
+                    progress_text.innerHTML = parseInt(moveX / moveWidth * 100) + '%'
+                    return false
+                }
+                document.body.onmouseup = function () {
+                    document.body.onmousemove = null
+                }
+            }
+        }
+    </script>
 </body>
 </html>
